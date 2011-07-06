@@ -98,7 +98,12 @@ class Kohana_Controller_KMS_Admin extends Controller_Template {
 				$this->template->content = View::factory('kms/admin-users-edit', compact('user', 'roles'));
 				break;
 			case 'user-delete':
-				die('@TODO');
+				$user = KMS::instance('site')->users->where('id', '=', Request::$current->param('id'))->find();
+				if (!$user->loaded()) KMS::stop('Unable to load user!');
+				$sites = ORM::factory('site_user')->where('user_id', '=', $user->id)->find_all();
+				$user = $user->as_array();
+				$this->template->title = 'Delete User';
+				$this->template->content = View::factory('kms/user-delete', compact('user', 'sites'));
 				break;
 			default:
 				Request::$current->redirect( Route::url('kms-admin', array('action'=>'admin', 'section'=>'users')) );

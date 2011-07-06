@@ -581,6 +581,48 @@ class Kohana_Controller_KMS_Action extends Controller {
 	}
 
 	/**
+	 * Deletes a user account
+	 */
+	public function action_user_delete() {
+		$this->_store = TRUE;
+		$this->_redirect = Route::url('kms-admin', array('action' => 'admin', 'section' => 'users'));
+
+		$user = KMS::instance('site')->users->find($this->_data['id']);
+		if (!$user->loaded()) KMS::stop('Unable to load user to delete');
+		$sites = ORM::factory('site_user')->where('user_id', '=', $this->_data['id'])->find_all();
+
+		if ($sites->count() > 1) {
+			try {
+				DB::delete('site_users')
+					->where('user_id', '=', $this->_data['id'])
+					->where('site_id', '=', $this->_data['site_id'])
+					->execute(KMS_DATABASE);
+				$this->_message("The user <strong>{$user->username}</strong> was successfully removed from the site");
+				$this->_details = "The user `{$user->username}` was removed from the site";
+				$this->_identifier = "users.{$user->id}";
+			} catch (Exception $e) {
+				die(kohana::debug($e));
+				$this->_message('An error occured when trying to update the database. [1]', 'error');
+				$this->_store = FALSE;
+			}
+		} else {
+			try {
+				DB::delete('site_users')
+					->where('user_id', '=', $this->_data['id'])
+					->execute(KMS_DATABASE);
+				$user->active = FALSE;
+				$user->save();
+				$this->_message("The user <strong>{$user->username}</strong> was successfully deleted");
+				$this->_details = "The user `{$user->username}` was deleted";
+				$this->_identifier = "users.{$user->id}";
+			} catch (Exception $e) {
+				$this->_message('An error occured when trying to update the database. [2]', 'error');
+				$this->_store = FALSE;
+			}
+		}
+	}
+
+	/**
 	 * Creates a new site variable
 	 */
 	public function action_variable_create() {

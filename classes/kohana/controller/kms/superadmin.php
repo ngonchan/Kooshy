@@ -55,7 +55,7 @@ class Kohana_Controller_KMS_SuperAdmin extends Controller_Template {
 	 */
 	public function action_index() {
 		$this->template->title = 'Super Admin Dashboard';
-		$this->template->content = '@TODO';
+		$this->template->content = '@TODO build out super admin interface';
 	}
 
 	/**
