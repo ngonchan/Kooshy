@@ -1,8 +1,8 @@
 # Ignored KMS Files #
 ######################
-\.kms
-config/database\.php
-config/kms\.php
+.kms
+config/database.php
+config/kms.php
 
 # Packages #
 ############
