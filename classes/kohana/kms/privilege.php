@@ -131,6 +131,7 @@ class Kohana_KMS_Privilege {
 	 * @return  boolean
 	 */
 	public function is_super() {
+		if (empty($this->_user)) return FALSE;
 		return (bool) $this->_user->super;
 	}
 

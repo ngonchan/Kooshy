@@ -32,6 +32,18 @@ class Kohana_Controller_KMS_Module extends Controller {
 		$this->_menu[15] = array('title' => 'Profile', 'params' => array('action' => 'profile'));
 		$this->_menu[999] = array('route' => 'kms-action', 'title' => 'Logout', 'params' => array('action' => 'logout'));
 
+		// SUPER ADMINISTRATION
+		if ( KMS::instance('privilege')->is_super() ) {
+			$this->_menu[1] = array('route' => 'kms-superadmin', 'title' => 'Kooshy Admin', 'params' => array('action' => 'overview'), 'submenu' => array(
+				10 => array('route' => 'kms-superadmin', 'title' => 'Overview', 'params' => array('action' => 'overview')),
+				20 => array('route' => 'kms-superadmin', 'title' => 'Users', 'params' => array('action' => 'users')),
+				30 => array('route' => 'kms-superadmin', 'title' => 'Roles', 'params' => array('action' => 'roles')),
+				40 => array('route' => 'kms-superadmin', 'title' => 'Templates', 'params' => array('action' => 'templates')),
+				50 => array('route' => 'kms-superadmin', 'title' => 'Snippets', 'params' => array('action' => 'snippets')),
+				60 => array('route' => 'kms-superadmin', 'title' => 'Chunks', 'params' => array('action' => 'chunks')),
+			));
+		}
+
 		// TEMPLATES
 		if ( KMS::instance('privilege')->has_any( array('template_activate', 'template_add', 'template_delete', 'template_edit') ) ) {
 			$this->_menu[20] = array('title' => 'Templates', 'params' => array('action' => 'templates'),
@@ -73,9 +85,9 @@ class Kohana_Controller_KMS_Module extends Controller {
 
 		// ADMINISTRATION
 		if ( KMS::instance('privilege')->has_any( array('user_add', 'user_edit') ) ) {
-			$this->_menu[80] = array('title' => 'Administration', 'params' => array('action' => 'admin'), 'submenu' => array());
-			if ( KMS::instance('privilege')->has_any( array('user_add', 'user_edit') ) )
-				$this->_menu[80]['submenu'][10] = array('title' => 'Users', 'params' => array('section' => 'users'));
+			$this->_menu[5] = array('title' => 'Administration', 'params' => array('action' => 'admin'), 'submenu' => array());
+			if ( KMS::instance('privilege')->has_any( array('user_add', 'user_edit', 'user_delete') ) )
+				$this->_menu[5]['submenu'][10] = array('title' => 'Users', 'params' => array('section' => 'users'));
 		}
 
 		parent::__construct($request);
@@ -111,10 +123,9 @@ class Kohana_Controller_KMS_Module extends Controller {
 			$class = array( ($level==0?'nav-top-item':'') );
 			if (empty($item['submenu'])) $class[] = 'no-submenu';
 			if (Request::instance()->action == $params['action']) {
-				if ($level == 0 || Request::instance()->param('section') == $params['section'])
+				if ($level == 0 || Request::instance()->param('section') == arr::get($params, 'section'))
 					$class[] = 'current';
 			}
-
 
 			$attributes = arr::get($item, 'attributes', array());
 			$attributes['class'] = (empty($attributes['class']) ? '' : $attributes['class'] . ' ') . implode(' ', $class);

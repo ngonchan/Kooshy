@@ -444,7 +444,7 @@ function setup_four() {
 
 function setup_five() {
 	$kms_file = arr::get(kohana::modules(), 'kms') . 'config/.kms';
-	file_put_contents($kms_file, 'KMS successfully installed on ' . date('Y-m-d H:i:s'));
+	file_put_contents($kms_file, 'KMS successfully installed on :: ' . date('Y-m-d H:i:s'));
 	chmod($kms_file, 0777);
 	?>
 <h2>Setup Complete!</h2>

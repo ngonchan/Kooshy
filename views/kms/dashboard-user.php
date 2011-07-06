@@ -26,7 +26,7 @@
 
 <div class="content-box column-right">
 	<div class="content-box-header">
-		<a href="http://cognitived.com/" class="button align-right">More News</a>
+		<a href="http://cognitived.com/topics/blog/kooshy-cms/" class="button align-right">More News</a>
 		<h3>Latest (KMS) News</h3>
 	</div>
 	<div class="content-box-content flush">

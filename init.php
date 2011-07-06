@@ -4,15 +4,14 @@
  * KMS Constants
  */
 define('KMS_DATABASE', 'kms');
-define('KMS_VERSION', '0.2');
+define('KMS_VERSION', '0.4');
 
 /*
  * KMS Routes
  */
-Route::set('kms-super-admin', 'kms-admin/super(/<action>(/<section>(/<id>(/<subid>))))')
+Route::set('kms-superadmin', 'kms-admin/super(/<action>(/<section>(/<id>(/<subid>))))')
 	->defaults(array(
 		'controller' => 'kms_superadmin',
-		'action'     => 'index'
 	));
 Route::set('kms-admin', 'kms-admin(/<action>(/<section>(/<id>(/<subid>))))', array('action' => '(?!sidebar|logout)[^/]*'))
 	->defaults(array(

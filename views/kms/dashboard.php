@@ -74,7 +74,7 @@
 								array('title' => 'Change Template', 'class' => 'button align-right')
 							) ?>
 							Active Template <strong><?php echo $template ?></strong><br />
-							You are using <strong>KMS v<?php echo KMS_VERSION ?></strong>
+							You are using <strong>Kooshy v<?php echo KMS_VERSION ?></strong>
 						</td>
 					</tr>
 				</tfoot>
@@ -127,7 +127,7 @@
 	</div> <!-- End .content-box-content -->
 
 	<div class="content-box-header nested">
-		<a href="http://cognitived.com/" class="button align-right">More News</a>
+		<a href="http://cognitived.com/topics/blog/kooshy-cms/" class="button align-right">More News</a>
 		<h3>Latest (KMS) News</h3>
 	</div>
 	<div class="content-box-content flush">

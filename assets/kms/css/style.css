@@ -75,6 +75,10 @@ p {
 	display: none;
 }
 
+.nowrap {
+	white-space: nowrap;
+}
+
 /************ Button ************/
 .button {
 	font-family: Verdana, Arial, sans-serif;

@@ -33,7 +33,7 @@ class Kohana_Controller_KMS_SuperAdmin extends Controller_Template {
 		parent::before();
 		$this->_site = KMS::instance('site');
 		$this->_user = KMS::Session()->get('user');
-		if ($this->_user === NULL) {
+		if ( $this->_user === NULL || !KMS::instance('privilege')->is_super() ) {
 			Request::$current->redirect( Route::url('kms-admin', array('action' => 'login')) );
 		}
 
@@ -54,8 +54,25 @@ class Kohana_Controller_KMS_SuperAdmin extends Controller_Template {
 	 * Super administration overview
 	 */
 	public function action_index() {
-		$this->template->title = 'Super Admin Dashboard';
-		$this->template->content = '@TODO build out super admin interface';
+		KMS::stop('Should not be here!');
+	}
+
+	public function action_overview() {
+		$this->template->title = 'KMS Information';
+		$installed = file_get_contents(arr::get(kohana::modules(), 'kms') . 'config/.kms');
+		$installed = strtotime( trim(preg_replace('/^.+?\:\:(.+?)$/', '$1', $installed)) );
+		$supers = ORM::factory('user')->where('super', '=', TRUE)->find_all();
+		$sites = ORM::factory('site')->find_all();
+		$counts = array(
+			'content'   => ORM::factory('site_content')->count_all(),
+			'chunks'    => ORM::factory('snippet')->where('eval', '=', FALSE)->count_all(),
+			'snippets'  => ORM::factory('snippet')->where('eval', '=', TRUE)->count_all(),
+			'variables' => ORM::factory('site_variable')->count_all(),
+		);
+		$activity = ORM::factory('user_action')->order_by('created', 'desc')->limit(10)->find_all();
+		$this->template->content = View::factory('kms/super-information', compact(
+			'sites', 'activity', 'installed', 'supers', 'counts'
+		));
 	}
 
 	/**
