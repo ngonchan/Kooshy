@@ -20,6 +20,15 @@
 			</div>
 			<?php } ?>
 
+			<div class="notification information png_bg">
+				<a href="" class="close"><img src="/kms-asset/images/icons/cross_grey_small.png" title="Close this notification" alt="close" /></a>
+				<div>
+					This section contains template variables for the title, meta keywords, meta description, and content area
+					sections. The variable names are [[v*title]], [[v*meta_keywords]], [[v*meta_description]], and [[v*content]]
+					respectfully.
+				</div>
+			</div>
+
 			<?php echo form::open(Route::url('kms-action', array('action'=>'content_add'))) ?>
 				<fieldset>
 					<p>
@@ -45,11 +54,11 @@
 
 				<fieldset>
 					<p>
-						<label for="ff_meta_keywords">Meta Keywords [meta_keywords]</label>
+						<label for="ff_meta_keywords">Meta Keywords</label>
 						<input class="text-input large-input" type="text" id="ff_meta_keywords" name="meta_keywords" value="<?php echo arr::get($content, 'meta_keywords') ?>" />
 					</p>
 					<p>
-						<label for="ff_meta_description">Meta Description [meta_description]</label>
+						<label for="ff_meta_description">Meta Description</label>
 						<input class="text-input large-input" type="text" id="ff_meta_description" name="meta_description" value="<?php echo arr::get($content, 'meta_description') ?>" />
 					</p>
 					<p>

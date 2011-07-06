@@ -1,11 +1,8 @@
-# Compiled source #
-###################
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
+# Ignored KMS Files #
+######################
+.kms
+config/database.php
+config/kms.php
 
 # Packages #
 ############
