@@ -17,11 +17,9 @@ config/kms.php
 *.tar
 *.zip
 
-# Logs and databases #
-######################
+# Logs #
+########
 *.log
-*.sql
-*.sqlite
 
 # OS generated files #
 ######################
