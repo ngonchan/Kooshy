@@ -127,7 +127,7 @@
 		<?php echo html::anchor(Route::url('kms-superadmin', array(
 			'action' => 'activity'
 		)), 'View All Activity', array('class'=>'button align-right')) ?>
-		<h3>Latest Site Activity</h3>
+		<h3>Latest Activity in Kooshy</h3>
 	</div>
 	<div class="content-box-content flush">
 		<div class="tab-content default-tab">

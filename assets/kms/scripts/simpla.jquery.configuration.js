@@ -77,7 +77,19 @@ $(document).ready(function(){
 			$.fn.dataTableExt.oStdClasses.sPageButtonActive = 'current';
 			$.fn.dataTableExt.oPagination.iFullNumbersShowPages = 5;
 			$('table.data.sort').dataTable({
+				'iDisplayLength': 10,
 				'aLengthMenu': [[10, 25, 50, -1], [10, 25, 50, "All"]],
+				'sPaginationType': 'tfoot_numbers',
+				'sDom': '<"notification datatable png_bg"<"align-left"l><"align-right"f><i><"clear">>rtp<"clear">'
+			});
+		}
+		if ($('table.data.sort_long').length > 0) {
+			$.fn.dataTableExt.oStdClasses.sPageButton = 'number';
+			$.fn.dataTableExt.oStdClasses.sPageButtonActive = 'current';
+			$.fn.dataTableExt.oPagination.iFullNumbersShowPages = 5;
+			$('table.data.sort_long').dataTable({
+				'iDisplayLength': 25,
+				'aLengthMenu': [[25, 50, 100, -1], [25, 50, 100, "All"]],
 				'sPaginationType': 'tfoot_numbers',
 				'sDom': '<"notification datatable png_bg"<"align-left"l><"align-right"f><i><"clear">>rtp<"clear">'
 			});

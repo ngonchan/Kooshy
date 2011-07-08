@@ -1,3 +1,27 @@
+$.fn.dataTableExt.afnSortData['std'] = function  ( oSettings, iColumn, iVisColumn ) {
+	var aData = [];
+	$('td:eq('+iColumn+')', oSettings.oApi._fnGetTrNodes(oSettings)).each( function () {
+		aData.push( $(this).attr('sortdata') ? $(this).attr('sortdata') + '::::' + $(this).html() : $(this).html() );
+	});
+	return aData;
+};
+
+$.fn.dataTableExt.oSort['string-asc'] = function( a, b ) {
+	a = a.replace(/^(.+?)\:\:\:\:.+$/, '$1');
+	b = b.replace(/^(.+?)\:\:\:\:.+$/, '$1');
+	var x = a.toLowerCase();
+	var y = b.toLowerCase();
+	return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+}
+
+$.fn.dataTableExt.oSort['string-desc'] = function( a, b ) {
+	a = a.replace(/^(.+?)\:\:\:\:.+$/, '$1');
+	b = b.replace(/^(.+?)\:\:\:\:.+$/, '$1');
+	var x = a.toLowerCase();
+	var y = b.toLowerCase();
+	return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+}
+
 $.fn.dataTableExt.oPagination.tfoot_numbers = {
 	/*
 		 * Function: oPagination.tfoot_numbers.fnInit

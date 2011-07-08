@@ -427,15 +427,18 @@ ul.content-box-tabs li a.current {
 
 /*************** Pagination ***************/
 
-#main-content table.data.sort thead th {
+#main-content table.data.sort thead th,
+#main-content table.data.sort_long thead th {
 	cursor: pointer;
 }
 
-#main-content table.data.sort thead th.sorting_asc {
+#main-content table.data.sort thead th.sorting_asc,
+#main-content table.data.sort_long thead th.sorting_asc {
 	background: url(/kms-asset/images/arrow-up.gif) 98% center no-repeat;
 }
 
-#main-content table.data.sort thead th.sorting_desc {
+#main-content table.data.sort thead th.sorting_desc,
+#main-content table.data.sort_long thead th.sorting_desc {
 	background: url(/kms-asset/images/arrow-down.gif) 98% center no-repeat;
 }
 

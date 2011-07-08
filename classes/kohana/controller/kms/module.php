@@ -36,11 +36,12 @@ class Kohana_Controller_KMS_Module extends Controller {
 		if ( KMS::instance('privilege')->is_super() ) {
 			$this->_menu[1] = array('route' => 'kms-superadmin', 'title' => 'Kooshy Admin', 'params' => array('action' => 'overview'), 'submenu' => array(
 				10 => array('route' => 'kms-superadmin', 'title' => 'Overview', 'params' => array('action' => 'overview')),
-				20 => array('route' => 'kms-superadmin', 'title' => 'Users', 'params' => array('action' => 'users')),
-				30 => array('route' => 'kms-superadmin', 'title' => 'Roles', 'params' => array('action' => 'roles')),
-				40 => array('route' => 'kms-superadmin', 'title' => 'Templates', 'params' => array('action' => 'templates')),
-				50 => array('route' => 'kms-superadmin', 'title' => 'Snippets', 'params' => array('action' => 'snippets')),
-				60 => array('route' => 'kms-superadmin', 'title' => 'Chunks', 'params' => array('action' => 'chunks')),
+				20 => array('route' => 'kms-superadmin', 'title' => 'Activity', 'params' => array('action' => 'activity')),
+				30 => array('route' => 'kms-superadmin', 'title' => 'Users', 'params' => array('action' => 'users')),
+				40 => array('route' => 'kms-superadmin', 'title' => 'Roles', 'params' => array('action' => 'roles')),
+				50 => array('route' => 'kms-superadmin', 'title' => 'Templates', 'params' => array('action' => 'templates')),
+				60 => array('route' => 'kms-superadmin', 'title' => 'Snippets', 'params' => array('action' => 'snippets')),
+				70 => array('route' => 'kms-superadmin', 'title' => 'Chunks', 'params' => array('action' => 'chunks')),
 			));
 		}
 
@@ -122,9 +123,17 @@ class Kohana_Controller_KMS_Module extends Controller {
 			$params = array_merge($params, $item['params']);
 			$class = array( ($level==0?'nav-top-item':'') );
 			if (empty($item['submenu'])) $class[] = 'no-submenu';
-			if (Request::instance()->action == $params['action']) {
-				if ($level == 0 || Request::instance()->param('section') == arr::get($params, 'section'))
+			if (Request::instance()->action == $params['action']
+				|| preg_replace('/\_/', '-', Request::instance()->controller) == arr::get($item, 'route')
+			) {
+				if ($level == 0 ||
+					(
+						Request::instance()->action == arr::get($params, 'action') &&
+						Request::instance()->param('section') == arr::get($params, 'section')
+					)
+				) {
 					$class[] = 'current';
+				}
 			}
 
 			$attributes = arr::get($item, 'attributes', array());

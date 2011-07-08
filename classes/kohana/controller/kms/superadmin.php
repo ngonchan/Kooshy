@@ -57,8 +57,11 @@ class Kohana_Controller_KMS_SuperAdmin extends Controller_Template {
 		KMS::stop('Should not be here!');
 	}
 
+	/**
+	 * Displays overview for Kooshy environment
+	 */
 	public function action_overview() {
-		$this->template->title = 'KMS Information';
+		$this->template->title = 'Kooshy Environment Overview';
 		$installed = file_get_contents(arr::get(kohana::modules(), 'kms') . 'config/.kms');
 		$installed = strtotime( trim(preg_replace('/^.+?\:\:(.+?)$/', '$1', $installed)) );
 		$supers = ORM::factory('user')->where('super', '=', TRUE)->find_all();
@@ -70,10 +73,20 @@ class Kohana_Controller_KMS_SuperAdmin extends Controller_Template {
 			'variables' => ORM::factory('site_variable')->count_all(),
 		);
 		$activity = ORM::factory('user_action')->order_by('created', 'desc')->limit(10)->find_all();
-		$this->template->content = View::factory('kms/super-information', compact(
+		$this->template->content = View::factory('kms/super-overview', compact(
 			'sites', 'activity', 'installed', 'supers', 'counts'
 		));
 	}
+
+	/**
+	 * Displays overview for Kooshy activity
+	 */
+	public function action_activity() {
+		$this->template->title = 'Kooshy Activity';
+		$activity = ORM::factory('user_action')->order_by('created', 'desc')->find_all();
+		$this->template->content = View::factory('kms/super-activity', compact('activity'));
+	}
+
 
 	/**
 	 * Loads template pages
