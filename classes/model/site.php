@@ -48,9 +48,6 @@ class Model_Site extends ORM {
 		'description' => array(
 			'not_empty'  => NULL,
 		),
-		'template_id' => array(
-			'not_empty'  => NULL,
-		),
 	);
 
 }

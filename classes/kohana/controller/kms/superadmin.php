@@ -87,6 +87,56 @@ class Kohana_Controller_KMS_SuperAdmin extends Controller_Template {
 		$this->template->content = View::factory('kms/super-activity', compact('activity'));
 	}
 
+	/**
+	 * Loads site pages
+	 */
+	public function action_sites() {
+		switch (Request::$current->param('section')) {
+			case 'overview':
+				$site = ORM::factory('site')->find(Request::$current->param('id'));
+				if (!$site->loaded()) KMS::stop('The requested site was not found');
+				$counts = (object) array(
+					'content'   => $site->content->count_all(),
+					'variables' => $site->variables->count_all(),
+					'chunks'    => $site->snippets->where('eval', '=', FALSE)->count_all(),
+					'snippets'  => $site->snippets->where('eval', '=', TRUE)->count_all(),
+				);
+				$template = $site->templates->find( $site->site_templates->where('enabled', '=', TRUE)->find()->template_id )->name;
+				$activity = $site->user_actions->order_by('created', 'desc')->limit(25)->find_all();
+				$chunks = ORM::factory('snippet')->where('eval', '=', FALSE)->find_all();
+				$snippets = ORM::factory('snippet')->where('eval', '=', TRUE)->find_all();
+				$this->template->title = $site->description;
+				$this->template->content = View::factory('kms/super-site-overview', compact('site', 'counts', 'template', 'activity', 'chunks', 'snippets'));
+				break;
+			case 'add':
+				$site = array();
+				if (KMS::Session()->path('ua.status') === 'failed') {
+					$site = KMS::Session()->path('ua.fields');
+				}
+				$this->template->title = 'New Site';
+				$this->template->content = View::factory('kms/super-site-add', compact('site'));
+				break;
+			case 'edit':
+				$this->template->title = 'Editing Site';
+				$site = ORM::factory('site')->find(Request::$current->param('id'));
+				if (!$site->loaded()) KMS::stop('The requested site was not found');
+				if (KMS::Session()->path('ua.status') === 'failed') {
+					$site->values(KMS::Session()->path('ua.fields'));
+				}
+				$site = $site->as_array();
+				$this->template->content = View::factory('kms/super-site-edit', compact('site'));
+				break;
+			case 'delete':
+				$site = ORM::factory('site')->find(Request::$current->param('id'));
+				if (!$site->loaded()) KMS::stop('The requested site was not found');
+				$this->template->title = 'Delete Site';
+				$this->template->content = View::factory('kms/super-site-delete', compact('site'));
+				break;
+			default:
+				Request::$current->redirect( Route::url('kms-superadmin', array('action' => 'overview')) );
+		}
+	}
+
 
 	/**
 	 * Loads template pages

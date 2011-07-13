@@ -99,6 +99,11 @@ p {
 	padding: 5px 7px 3px 7px !important;
 }
 
+.button.red {
+	background: #950000 url(/kms-asset/images/bg-button-red.gif) top left repeat-x !important;
+	border-color: #940000 !important;
+}
+
 a.remove-link {
 	color: #bb0000;
 }
@@ -362,7 +367,7 @@ ul.content-box-tabs li a.current {
 }
 
 .content-box-content {
-	padding: 20px;
+	padding: 10px 20px;
 	font-size: 13px;
 	border-top: 1px solid #ccc;
 }
@@ -517,6 +522,12 @@ form label {
 	display: block;
 	padding: 0 0 10px;
 	font-weight: bold;
+	cursor: pointer;
+}
+
+form label.inline {
+	display: inline;
+	padding-left: 10px;
 }
 
 form fieldset legend {

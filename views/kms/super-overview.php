@@ -33,7 +33,7 @@
 					<tr>
 						<td>
 							<?php echo html::anchor(Route::url('kms-superadmin', array(
-								'action' => 'sites', 'section' => 'edit', 'id' => $site->id
+								'action' => 'sites', 'section' => 'overview', 'id' => $site->id
 							)), $site->description) ?>
 						</td>
 						<td><?php echo $site->domain ?></td>

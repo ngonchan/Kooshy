@@ -441,6 +441,128 @@ class Kohana_Controller_KMS_Action extends Controller {
 	}
 
 	/**
+	 * Adds a site
+	 */
+	public function action_site_add() {
+		$this->_redirect = Route::url('kms-superadmin', array('action' => 'sites', 'section' => 'add'));
+
+		$site = ORM::factory('site');
+		$site->values($this->_data);
+		$this->_store = $site->check();
+		if ($this->_store) {
+			try {
+				DB::query(NULL, 'BEGIN')->execute(KMS_DATABASE);
+				$site->save();
+				$route = $site->routes;
+				$route->values(array('site_id' => $site->id, 'name' => 'default', 'route' => '(<path>)'));
+				$route->save();
+				$defaults = $route->defaults;
+				$defaults->values(array('site_route_id' => $route->id, 'key' => 'controller', 'value' => 'kms'));
+				$defaults->save();
+				$defaults = $route->defaults;
+				$defaults->values(array('site_route_id' => $route->id, 'key' => 'action', 'value' => 'index'));
+				$defaults->save();
+				$regexp = $route->regexps;
+				$regexp->values(array('site_route_id' => $route->id, 'key' => 'path', 'regexp' => '.*'));
+				$regexp->save();
+
+				$this->_message("The site <strong>{$site->domain}</strong> was successfully created");
+				$this->_details = "The site `{$site->domain}` was created";
+				$this->_identifier = "sites.{$site->id}";
+				$this->_redirect = Route::url('kms-superadmin', array('action' => 'sites', 'section' => 'overview', 'id' => $site->id));
+				DB::query(NULL, 'COMMIT')->execute(KMS_DATABASE);
+			} catch (Exception $e) {
+				DB::query(NULL, 'ROLLBACK')->execute(KMS_DATABASE);
+				$this->_message('The domain name (' . arr::get($this->_data, 'domain') . ') is already in use. Please enter a unique domain name.', 'error');
+				$this->_store = FALSE;
+			}
+		} else {
+			$msg = 'ERROR: The following errors occurred:<br />';
+			foreach ($site->validate()->errors('validate') as $error)
+				$msg .= ' - ' . ucfirst( $error ) . '<br />';
+			$this->_message($msg, 'error');
+		}
+	}
+
+	/**
+	 * Edits a site
+	 */
+	public function action_site_edit() {
+		$id = arr::get($this->_data, 'id');
+		unset($this->_data['id']); // do not update primary key
+		$this->_redirect = Route::url('kms-superadmin', array('action' => 'sites', 'section' => 'overview', 'id' => $id));
+
+		$site = ORM::factory('site')->find($id);
+		if (!$site->loaded()) KMS::stop('Unable to load site for editing');
+		$site->values($this->_data);
+		$this->_store = $site->check();
+		if ($this->_store) {
+			try {
+				$site->save();
+				$this->_message("The site <strong>{$site->domain}</strong> was successfully updated");
+				$this->_details = "The site `{$site->domain}` was updated";
+				$this->_identifier = "sites.{$site->id}";
+			} catch (Exception $e) {
+				$this->_message('The domain name (' . arr::get($this->_data, 'domain') . ') is already in use. Please enter a unique domain name.', 'error');
+				$this->_store = FALSE;
+			}
+		} else {
+			$msg = 'ERROR: The following errors occurred:<br />';
+			foreach ($site->validate()->errors('validate') as $error)
+				$msg .= ' - ' . ucfirst( $error ) . '<br />';
+			$this->_message($msg, 'error');
+		}
+	}
+
+	/**
+	 * Edits a site
+	 */
+	public function action_site_delete() {
+		$id = arr::get($this->_data, 'id');
+		$this->_redirect = Route::url('kms-superadmin', array('action' => 'overview'));
+
+		$site = ORM::factory('site')->find($id);
+		if (!$site->loaded()) KMS::stop('Unable to load site for editing');
+		$this->_store = TRUE;
+		$this->_message("The site <strong>{$site->domain}</strong> was successfully deleted");
+		$this->_details = "The site `{$site->domain}` was deleted";
+		$this->_identifier = "sites.{$site->id}";
+
+		try {
+			DB::query(NULL, 'BEGIN')->execute(KMS_DATABASE);
+
+			$lists = $site->lists->find_all();
+			foreach ($lists as $list) {
+				ORM::factory('list')->load($list->name)->drop();
+				$list->delete();
+			}
+			$routes = $site->routes->where('site_id', '=', $site->id)->find_all();
+			foreach ($routes as $route) {
+				DB::delete('site_route_defaults')->where('site_route_id', '=', $route->id)->execute(KMS_DATABASE);
+				DB::delete('site_route_regexps')->where('site_route_id', '=', $route->id)->execute(KMS_DATABASE);
+				$route->delete();
+			}
+
+			DB::delete('roles')->where('site_id', '=', $site->id)->execute(KMS_DATABASE);
+			DB::delete('site_contents')->where('site_id', '=', $site->id)->execute(KMS_DATABASE);
+			DB::delete('site_snippets')->where('site_id', '=', $site->id)->execute(KMS_DATABASE);
+			DB::delete('site_templates')->where('site_id', '=', $site->id)->execute(KMS_DATABASE);
+			DB::delete('site_users')->where('site_id', '=', $site->id)->execute(KMS_DATABASE);
+			DB::delete('site_variables')->where('site_id', '=', $site->id)->execute(KMS_DATABASE);
+			DB::delete('user_actions')->where('site_id', '=', $site->id)->execute(KMS_DATABASE);
+			DB::query(Database::DELETE, 'DELETE u.* FROM users u LEFT JOIN site_users su ON su.user_id = u.id WHERE su.site_id IS NULL and u.super != 1')->execute(KMS_DATABASE);
+			$site->delete();
+
+			DB::query(NULL, 'COMMIT')->execute(KMS_DATABASE);
+		} catch (Exception $e) {
+			DB::query(NULL, 'ROLLBACK')->execute(KMS_DATABASE);
+			$this->_message('Failed to delete the domain <strong>' . $site->domain . '</strong>. <br /><br />' . $e->getMessage(), 'error');
+			$this->_redirect = Route::url('kms-superadmin', array('action' => 'sites', 'section' => 'overview', 'id' => $site->id));
+			$this->_store = FALSE;
+		}
+	}
+
+	/**
 	 * Activates a site template
 	 * @param  int  id of the template to activate
 	 */
