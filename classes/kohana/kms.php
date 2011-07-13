@@ -81,8 +81,12 @@ class Kohana_KMS {
 	 */
 	public static function instance($class, $params = NULL) {
 		$install_file = arr::get(kohana::modules(), 'kms') . 'config/.kms';
-		if ( !file_exists($install_file) && !empty($_SERVER['REQUEST_URI']) && !preg_match('/kms-asset/', $_SERVER['REQUEST_URI']) ) {
-			require arr::get(kohana::modules(), 'kms') . 'install.php';
+		if ( !file_exists($install_file) ) {
+      if ( !empty($_SERVER['REQUEST_URI']) && !preg_match('/kms-asset/', $_SERVER['REQUEST_URI']) ) {
+        require arr::get(kohana::modules(), 'kms') . 'install.php';
+      } else {
+        return;
+      }
 		}
 
 		if (empty(self::$_instance)) {
