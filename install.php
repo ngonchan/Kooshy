@@ -226,6 +226,24 @@ function setup_one() {
 			<td class="fail">The <code><?php echo $config_dir ?></code> directory is not writable.</td>
 		<?php endif ?>
 	</tr>
+	<tr>
+		<th>DB Configuration File</th>
+		<?php $modules = kohana::modules(); $config = $modules['kms'] . 'config/database.php' ?>
+		<?php if ( !file_exists($config) ): ?>
+			<td class="pass"><code><?php echo $config ?></code> does not yet exist.</td>
+		<?php else: $failed = TRUE ?>
+			<td class="fail">The database configuration file <code><?php echo $config_dir ?></code> already exists.</td>
+		<?php endif ?>
+	</tr>
+	<tr>
+		<th>KMS Configuration File</th>
+		<?php $modules = kohana::modules(); $config = $modules['kms'] . 'config/kms.php' ?>
+		<?php if ( !file_exists($config) ): ?>
+			<td class="pass"><code><?php echo $config ?></code> does not yet exist.</td>
+		<?php else: $failed = TRUE ?>
+			<td class="fail">The KMS configuration file <code><?php echo $config_dir ?></code> already exists.</td>
+		<?php endif ?>
+	</tr>
 </table>
 
 <?php if ($failed === TRUE) { ?>
